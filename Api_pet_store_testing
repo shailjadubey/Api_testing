@@ -1,0 +1,174 @@
+package petstore;
+
+import java.util.Scanner;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.devtools.idealized.Javascript;
+
+import io.opentelemetry.exporter.logging.SystemOutLogExporter;
+import net.jodah.failsafe.internal.util.Assert;
+
+public class petstore_api_testing {
+    private static final String NULL = null;
+	static Scanner s=new Scanner(System.in);
+	public static void main(String[] args) throws InterruptedException
+	{
+		WebDriver driver;
+		System.setProperty("webdriver.chrome.driver", "C:\\Users\\shailja.dubey\\Downloads\\chromedriver_win32\\chromedriver.exe");
+		driver=new ChromeDriver();
+	    //Launching pet store website
+	    driver.get("https://petstore.swagger.io/");
+	    System.out.println("Website launched");
+	    try//try catch if wrong website 
+	    {
+	    System.out.println("Title of website is-"+driver.getTitle());
+	    }
+	    catch(Exception e)
+	    {
+	    	System.out.println("Wrong Website !! Please enter correct URL");
+	    }
+	    driver.manage().window().maximize();
+	    JavascriptExecutor js=(JavascriptExecutor) driver;
+	      js.executeScript("window.scrollBy(0,1000)");//scrolling window
+	      Thread.sleep(3000);
+	      post_upload_image(driver);
+	      post_add_pet(driver);
+	}
+	
+	   
+	    private static void post_add_pet(WebDriver driver) {
+		// TODO Auto-generated method stub
+	    	try
+	    	{
+	    		driver.findElement(By.xpath("//*[@id=\"operations-pet-addPet\"]/div/button[1]/div")).click();
+	    		System.out.println("2nd api open");
+	    	}
+		catch(Exception e)
+	    	{
+			System.out.println("Wrong path");
+	    	}
+	    	try
+	    	{
+	    		Thread.sleep(3000);
+	    	driver.findElement(By.xpath("//button[@class='btn try-out__btn']")).click();
+	    	System.out.println("Button click-Try it out");
+	    	
+	    	}
+	    	catch(Exception e) {
+	    		System.out.println("Exception in try it out button");
+	    	}
+	    	String button_text=NULL;
+	    	try
+	    	{
+		     button_text=driver.findElement(By.xpath("//button[@class='btn try-out__btn cancel']")).getText();
+		    System.out.println("Button text DONE");
+	    	}
+	    	catch(Exception e)
+	    	{
+	    		System.out.println("Error in button text");
+	    	}
+		    System.out.println(button_text);
+		    String test_text1="Cancel";
+		    if(button_text.equals(test_text1))
+		    {
+		    	System.out.println("Now you can edit the text");
+		    	System.out.println("Click on execute");
+		    	try
+		    	{
+		        driver.findElement(By.xpath("//button[@class='btn execute opblock-control__btn']")).click();
+		        System.out.println("Execute done!!!");
+		    	}
+		    	catch(Exception e)
+		    	{
+		    		System.out.println("Error in execute button");
+		    	}
+		        System.out.println("Printing response from server");
+		        try
+		        {
+		        System.out.println(driver.findElement(By.xpath("//div[@class='responses-wrapper']")).getText());
+		        }
+		        catch(Exception e)
+		        {
+		        	System.out.println("Error in body");
+		        }
+		        System.out.println("Do you want to download the api response");
+		        int response=s.nextInt();
+		        if(response==1)
+		        {
+		        	System.out.println("Download file");
+		        	try
+		        	{
+		        	driver.findElement(By.xpath("//div[@class='download-contents']")).click();
+		        	}
+		        	catch(Exception e)
+		        	{
+		        		System.out.println("error in download");
+		        	}
+		        	System.out.println("File downloaded done!!!!");
+		        }
+		        else
+		        {
+		        	System.out.println("Contiune");
+		        }
+		    }
+		    else
+		    {
+		    	System.out.println("Field is not editable");
+		    }
+	}
+
+
+		private static void post_upload_image(WebDriver driver) {
+		// TODO Auto-generated method stub
+		
+	
+	    try
+		{
+	    	driver.findElement(By.xpath("//span[@data-path='/pet/{petId}/uploadImage']")).click();
+	    	System.out.println("1st Api open");
+	    }
+	    catch(Exception e)
+	    {
+	    	System.out.println("wrong path");
+	    }
+	    System.out.println("Sending response to Api");
+	    //click on try it out button
+	    driver.findElement(By.xpath("//button[@class='btn try-out__btn']")).click();
+	    String button_text=driver.findElement(By.xpath("//button[@class='btn try-out__btn cancel']")).getText();
+	    System.out.println(button_text);
+	    String test_text1="Cancel";
+	    if(button_text.equals(test_text1))
+	    {
+	    	System.out.println("Now you can edit the text");
+	    	System.out.println("Enter Pet id");
+	    	String pet_id=s.next();
+	    	driver.findElement(By.xpath("//*[@id=\"operations-pet-uploadFile\"]/div[2]/div/div[1]/div[2]/div/table/tbody/tr[1]/td[2]/input")).sendKeys(pet_id);
+	    	System.out.println("Enter metadata");
+	    	String meta_data=s.next();
+	    	driver.findElement(By.xpath("//*[@id=\"operations-pet-uploadFile\"]/div[2]/div/div[1]/div[2]/div/table/tbody/tr[2]/td[2]/input")).sendKeys(meta_data);
+	        System.out.println("Uploading file to server");
+	        try
+	        {
+	        driver.findElement(By.xpath("//input[@type='file']")).sendKeys("C:\\Users\\shailja.dubey\\Pictures\\Assignment\\Assignment1.png");
+	         System.out.println("File uploaded!!");
+	        }
+	        catch(Exception e)
+	        {
+	        	System.out.println("File not found enter valid path");
+	        }
+	        System.out.println("Click on execute");
+	        driver.findElement(By.xpath("//button[@class='btn execute opblock-control__btn']")).click();
+	        System.out.println("Printing response from server");
+	        System.out.println(driver.findElement(By.xpath("//div[@class='responses-wrapper']")).getText());
+	    }
+	    else
+	    {
+	    	System.out.println("Field is not editable");
+	    }
+	    
+	}
+	
+}
